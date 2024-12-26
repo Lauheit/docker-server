@@ -1,0 +1,22 @@
+services:
+  apache:
+    build:
+      context: ./apache
+    container_name: apache
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - apache
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
