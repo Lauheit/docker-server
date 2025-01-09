@@ -1,17 +1,20 @@
 services:
   apache:
-    build:
-      context: ./apache
+    #build:
+    #  context: ./apache
+    image: cr.yandex/crpvb6onlh7bl1judmo1/apache:latest
     container_name: apache
     networks:
       - app-network
 
   nginx:
-    build:
-      context: ./nginx
-    container_name: nginx
+    #build:
+    #  context: ./nginx
+    #container_name: nginx
+    image: cr.yandex/crpvb6onlh7bl1judmo1/nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - apache
     networks:
