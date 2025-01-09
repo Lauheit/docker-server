@@ -1,12 +1,14 @@
 pipeline { 
   agent any 
- 
+  environment {
+        PATH = "/home/lauhe/yandex-cloud/bin/yc:${env.PATH}"
+    } 
   stages {
       stage("Build and push docker images") { 
           steps {
               script {
-                    def nginxTag = "cr.yandex/crpvb6onlh7bl1judmo1/nginx:${env.BUILD_NUMBER}"
-                    def apacheTag = "cr.yandex/crpvb6onlh7bl1judmo1/apache:${env.BUILD_NUMBER}"
+		    def nginxTag = "lauheit/nginx:latest"
+		    def apacheTag = "lauheit/apache:latest"
 
                     sh "docker build -t ${nginxTag} ./nginx"
                     sh "docker build -t ${apacheTag} ./apache"
@@ -19,8 +21,8 @@ pipeline {
       stage('Deploy to Remote Server') {
             steps {
                 script {
-                    sh "scp docker-compose.yml user@remote-server:/home/lauhe/server"
-                    sh "ssh user@remote-server 'docker-compose -f /home/lauhe/server/docker-compose.yml pull && docker-compose -f /home/lauhe/server/docker-compose.yml up -d'"
+                    sh "scp -i /home/lauhe/.ssh/id_ed25519 docker-compose.yaml lauhe@158.160.22.107:/home/lauhe/server"
+                    sh "ssh -i /home/lauhe/.ssh/id_ed25519 lauhe@158.160.22.107 'docker compose -f /home/lauhe/server/docker-compose.yaml pull && docker compose -f /home/lauhe/server/docker-compose.yaml up -d'"
                 }
             }
       }
